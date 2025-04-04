@@ -32,7 +32,10 @@ from posthog.temporal.common.schedule import describe_schedule
 from posthog.test.base import APIBaseTest
 from posthog.utils import get_instance_realm
 
-from ee.models.rbac.access_control import AccessControl
+try:
+    from ee.models.rbac.access_control import AccessControl
+except ImportError:
+    AccessControl = None
 
 
 def team_api_test_factory():
@@ -1208,7 +1211,10 @@ def team_api_test_factory():
         def test_can_complete_product_onboarding_as_member(
             self, mock_report_user_action: MagicMock, mock_report_user_action_legacy_endpoint: MagicMock
         ) -> None:
-            from ee.models import ExplicitTeamMembership
+try:
+    from ee.models import ExplicitTeamMembership
+except ImportError:
+    ExplicitTeamMembership = None
 
             self.organization_membership.level = OrganizationMembership.Level.MEMBER
             self.organization_membership.save()

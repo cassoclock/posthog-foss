@@ -9,11 +9,15 @@ from posthog.test.base import APIBaseTest
 from posthog.api.organization import OrganizationSerializer
 from rest_framework.test import APIRequestFactory
 from posthog.user_permissions import UserPermissions
-from ee.models.rbac.role import Role, RoleMembership
-from ee.models.rbac.access_control import AccessControl
-from ee.models.feature_flag_role_access import FeatureFlagRoleAccess
-from ee.models.explicit_team_membership import ExplicitTeamMembership
-from ee.models.rbac.organization_resource_access import OrganizationResourceAccess
+try:
+    from ee.models.rbac.role import Role, RoleMembership
+    from ee.models.rbac.access_control import AccessControl
+    from ee.models.feature_flag_role_access import FeatureFlagRoleAccess
+    from ee.models.explicit_team_membership import ExplicitTeamMembership
+    from ee.models.rbac.organization_resource_access import OrganizationResourceAccess
+except ImportError:
+    Role = RoleMembership = AccessControl = FeatureFlagRoleAccess = ExplicitTeamMembership = OrganizationResourceAccess = None
+
 
 
 class TestOrganizationAPI(APIBaseTest):

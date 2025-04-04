@@ -5,7 +5,10 @@ from django.core import mail
 from freezegun import freeze_time
 from rest_framework import status
 
-from ee.models.explicit_team_membership import ExplicitTeamMembership
+try:
+    from ee.models.explicit_team_membership import ExplicitTeamMembership
+except ImportError:
+    ExplicitTeamMembership = None
 from posthog.models.instance_setting import set_instance_setting
 from posthog.models.organization import Organization, OrganizationMembership
 from posthog.models.organization_invite import OrganizationInvite

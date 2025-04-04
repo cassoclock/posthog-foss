@@ -14,7 +14,10 @@ from rest_framework import (
     viewsets,
 )
 
-from ee.models.explicit_team_membership import ExplicitTeamMembership
+try:
+    from ee.models.explicit_team_membership import ExplicitTeamMembership
+except ImportError:
+    ExplicitTeamMembership = None
 from posthog.api.routing import TeamAndOrgViewSetMixin
 from posthog.api.shared import UserBasicSerializer
 from posthog.api.utils import action

@@ -3769,13 +3769,17 @@ class TestDecide(BaseTest, QueryMatchingTest):
             assert response["errorsWhileComputingFlags"] is False
             assert "feature_flags" in response["quotaLimited"]
 
-    @patch("ee.billing.quota_limiting.list_limited_team_attributes")
-    def test_decide_v3_return_empty_objects_for_all_feature_flag_related_fields_when_quota_limited(
-        self, _fake_token_limiting, *args
-    ):
-        from ee.billing.quota_limiting import QuotaResource
+   def test_decide_v3_return_empty_objects_for_all_feature_flag_related_fields_when_quota_limited(
+    self, *args
+):
+    if not QuotaResource:
+        self.skipTest("QuotaResource not available in FOSS.")
 
+    with patch.object(list_limited_team_attributes, "__call__", return_value=["some_token"]):
         with self.settings(DECIDE_FEATURE_FLAG_QUOTA_CHECK=True):
+            # your test logic here
+            ...
+
 
             def fake_limiter(*args, **kwargs):
                 return [self.team.api_token] if args[0] == QuotaResource.FEATURE_FLAG_REQUESTS else []
@@ -3788,14 +3792,15 @@ class TestDecide(BaseTest, QueryMatchingTest):
             assert response["errorsWhileComputingFlags"] is False
             assert "feature_flags" in response["quotaLimited"]
 
-    @patch("ee.billing.quota_limiting.list_limited_team_attributes")
-    def test_decide_v4_return_empty_objects_for_all_feature_flag_related_fields_when_quota_limited(
-        self, _fake_token_limiting, *args
-    ):
-        from ee.billing.quota_limiting import QuotaResource
+   def test_decide_v4_return_empty_objects_for_all_feature_flag_related_fields_when_quota_limited(
+    self, *args
+):
+    if not QuotaResource:
+        self.skipTest("QuotaResource not available in FOSS.")
 
+    with patch.object(list_limited_team_attributes, "__call__", return_value=["some_token"]):
         with self.settings(DECIDE_FEATURE_FLAG_QUOTA_CHECK=True):
-
+      
             def fake_limiter(*args, **kwargs):
                 return [self.team.api_token] if args[0] == QuotaResource.FEATURE_FLAG_REQUESTS else []
 
@@ -3806,10 +3811,11 @@ class TestDecide(BaseTest, QueryMatchingTest):
             assert response["errorsWhileComputingFlags"] is False
             assert "feature_flags" in response["quotaLimited"]
 
-    @patch("ee.billing.quota_limiting.list_limited_team_attributes")
-    def test_feature_flags_are_empty_list_when_not_quota_limited(self, _fake_token_limiting, *args):
-        from ee.billing.quota_limiting import QuotaResource
+   def test_feature_flags_are_empty_list_when_not_quota_limited(self, *args):
+    if not QuotaResource:
+        self.skipTest("QuotaResource not available in FOSS.")
 
+    with patch.object(list_limited_team_attributes, "__call__", return_value=["some_token"]):
         with self.settings(DECIDE_FEATURE_FLAG_QUOTA_CHECK=True):
 
             def fake_limiter(*args, **kwargs):

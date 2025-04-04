@@ -1,8 +1,14 @@
-from ee.models.rbac.access_control import AccessControl
-from ee.models.feature_flag_role_access import FeatureFlagRoleAccess
-from ee.models.rbac.organization_resource_access import OrganizationResourceAccess
+try:
+    from ee.models.rbac.access_control import AccessControl
+    from ee.models.feature_flag_role_access import FeatureFlagRoleAccess
+    from ee.models.rbac.organization_resource_access import OrganizationResourceAccess
+    from ee.models.rbac.role import Role
+except ImportError:
+    AccessControl = None
+    FeatureFlagRoleAccess = None
+    OrganizationResourceAccess = None
+    Role = None
 from posthog.models.feature_flag import FeatureFlag
-from ee.models.rbac.role import Role
 from django.db import transaction
 import structlog
 from sentry_sdk import capture_exception

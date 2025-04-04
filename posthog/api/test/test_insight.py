@@ -32,7 +32,10 @@ from posthog.models import (
     Text,
     User,
 )
-from ee.models.rbac.access_control import AccessControl
+try:
+    from ee.models.rbac.access_control import AccessControl
+except ImportError:
+    AccessControl = None
 from posthog.models.insight_caching_state import InsightCachingState
 from posthog.models.insight_variable import InsightVariable
 from posthog.models.project import Project

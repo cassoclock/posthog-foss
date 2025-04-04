@@ -26,7 +26,10 @@ from posthog.test.base import (
     QueryMatchingTest,
     snapshot_postgres_queries,
 )
-from ee.models.rbac.access_control import AccessControl
+try:
+    from ee.models.rbac.access_control import AccessControl
+except ImportError:
+    AccessControl = None
 
 valid_template: dict = {
     "template_name": "Sign up conversion template with variables",

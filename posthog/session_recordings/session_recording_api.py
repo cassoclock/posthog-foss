@@ -29,7 +29,10 @@ from rest_framework.utils.encoders import JSONEncoder
 from rest_framework.request import Request
 
 import posthog.session_recordings.queries.session_recording_list_from_query
-from ee.session_recordings.session_summary.summarize_session import summarize_recording
+try:
+    from ee.session_recordings.session_summary.summarize_session import summarize_recording
+except ImportError:
+    summarize_recording = lambda *args, **kwargs: None
 from posthog.api.person import MinimalPersonSerializer
 from posthog.api.routing import TeamAndOrgViewSetMixin
 from posthog.api.utils import action, safe_clickhouse_string

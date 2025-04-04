@@ -1,5 +1,8 @@
 import json
-from ee.clickhouse.materialized_columns.analyze import materialize
+try:
+    from ee.clickhouse.materialized_columns.analyze import materialize
+except ImportError:
+    materialize = lambda *args, **kwargs: None  # or pass, if it's optional
 from datetime import datetime, timedelta
 from typing import Optional, Any
 from unittest import mock

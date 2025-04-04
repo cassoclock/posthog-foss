@@ -544,25 +544,30 @@ class Team(UUIDClassicModel):
     from posthog.models.organization import OrganizationMembership
     from posthog.models.user import User
 
+    def all_users_with_access(self) -> QuerySet["User"]:
+    from posthog.models.organization import OrganizationMembership
+    from posthog.models.user import User
+
     if not self.access_control or not ExplicitTeamMembership:
         return User.objects.filter(
             id__in=OrganizationMembership.objects.filter(
                 organization_id=self.organization_id
             ).values_list("user_id", flat=True)
         )
-        else:
-            user_ids_queryset = (
-                OrganizationMembership.objects.filter(
-                    organization_id=self.organization_id, level__gte=OrganizationMembership.Level.ADMIN
-                )
-                .values_list("user_id", flat=True)
-                .union(
-                    ExplicitTeamMembership.objects.filter(team_id=self.id).values_list(
-                        "parent_membership__user_id", flat=True
-                    )
-                )
+
+    user_ids_queryset = (
+        OrganizationMembership.objects.filter(
+            organization_id=self.organization_id, level__gte=OrganizationMembership.Level.ADMIN
+        )
+        .values_list("user_id", flat=True)
+        .union(
+            ExplicitTeamMembership.objects.filter(team_id=self.id).values_list(
+                "parent_membership__user_id", flat=True
             )
-        return User.objects.filter(is_active=True, id__in=user_ids_queryset)
+        )
+    )
+
+    return User.objects.filter(is_active=True, id__in=user_ids_queryset)
 
     def __str__(self):
         if self.name:

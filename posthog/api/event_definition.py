@@ -140,7 +140,10 @@ class EventDefinitionViewSet(
         if EE_AVAILABLE and self.request.user.organization.is_feature_available(  # type: ignore
             AvailableFeature.INGESTION_TAXONOMY
         ):
-            from ee.models.event_definition import EnterpriseEventDefinition
+try:
+    from ee.models.event_definition import EnterpriseEventDefinition
+except ImportError:
+    EnterpriseEventDefinition = None
 
             enterprise_event = EnterpriseEventDefinition.objects.filter(id=id, team__project_id=self.project_id).first()
             if enterprise_event:
@@ -161,7 +164,10 @@ class EventDefinitionViewSet(
         if EE_AVAILABLE and self.request.user.organization.is_feature_available(  # type: ignore
             AvailableFeature.INGESTION_TAXONOMY
         ):
-            from ee.api.ee_event_definition import EnterpriseEventDefinitionSerializer
+try:
+    from ee.api.ee_event_definition import EnterpriseEventDefinitionSerializer
+except ImportError:
+    EnterpriseEventDefinitionSerializer = None
 
             serializer_class = EnterpriseEventDefinitionSerializer  # type: ignore
         return serializer_class

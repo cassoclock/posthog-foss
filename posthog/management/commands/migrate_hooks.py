@@ -11,8 +11,12 @@ def migrate_hooks(hook_ids: list[str], team_ids: list[int], dry_run: bool = Fals
         print("This command is only available in PostHog EE")  # noqa: T201
         return
 
+ try:
     from ee.models.hook import Hook
     from ee.api.hooks import create_zapier_hog_function
+except ImportError:
+    Hook = None
+    create_zapier_hog_function = None
 
     if hook_ids and team_ids:
         print("Please provide either hook_ids or team_ids, not both")  # noqa: T201

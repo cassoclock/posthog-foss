@@ -1,5 +1,8 @@
 from django.db import transaction
-from ee.models.rbac.access_control import AccessControl
+try:
+    from ee.models.rbac.access_control import AccessControl
+except ImportError:
+    AccessControl = None
 from ee.models.explicit_team_membership import ExplicitTeamMembership
 import structlog
 from posthog.models.organization import Organization, OrganizationMembership

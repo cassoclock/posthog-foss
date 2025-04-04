@@ -224,7 +224,7 @@ COPY --from=plugin-server-build --chown=posthog:posthog /code/plugin-server/node
 COPY --from=plugin-server-build --chown=posthog:posthog /code/plugin-server/package.json /code/plugin-server/package.json
 
 # Copy the Python dependencies and Django staticfiles from the posthog-build stage.
-COPY --from=posthog-build --chown=posthog:posthog /code/staticfiles /code/staticfiles
+# COPY --from=posthog-build --chown=posthog:posthog /code/staticfiles /code/staticfiles
 COPY --from=posthog-build --chown=posthog:posthog /python-runtime /python-runtime
 ENV PATH=/python-runtime/bin:$PATH \
     PYTHONPATH=/python-runtime

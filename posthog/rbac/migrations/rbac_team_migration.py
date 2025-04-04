@@ -3,7 +3,10 @@ try:
     from ee.models.rbac.access_control import AccessControl
 except ImportError:
     AccessControl = None
-from ee.models.explicit_team_membership import ExplicitTeamMembership
+try:
+    from ee.models.explicit_team_membership import ExplicitTeamMembership
+except ImportError:
+    ExplicitTeamMembership = None
 import structlog
 from posthog.models.organization import Organization, OrganizationMembership
 from sentry_sdk import capture_exception

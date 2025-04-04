@@ -4,11 +4,17 @@ import typing
 from django.db import close_old_connections
 from temporalio import activity
 
-from ee.billing.quota_limiting import (
-    QuotaLimitingCaches,
-    QuotaResource,
-    list_limited_team_attributes,
-)
+try:
+    from ee.billing.quota_limiting import (
+        QuotaLimitingCaches,
+        QuotaResource,
+        list_limited_team_attributes,
+    )
+except ImportError:
+    QuotaLimitingCaches = None
+    QuotaResource = None
+    list_limited_team_attributes = lambda *args, **kwargs: []
+
 from posthog.models.team.team import Team
 from posthog.temporal.common.logger import bind_temporal_worker_logger_sync
 

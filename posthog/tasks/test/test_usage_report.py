@@ -13,8 +13,16 @@ from django.test import TestCase
 from django.utils.timezone import now
 from freezegun import freeze_time
 
-from ee.api.test.base import LicensedTestMixin
-from ee.models.license import License
+try:
+    from ee.api.test.base import LicensedTestMixin
+except ImportError:
+    LicensedTestMixin = object  # Fallback base class
+
+try:
+    from ee.models.license import License
+except ImportError:
+    License = None
+
 from posthog.clickhouse.client import sync_execute
 from posthog.clickhouse.query_tagging import tag_queries
 from posthog.cloud_utils import TEST_clear_instance_license_cache

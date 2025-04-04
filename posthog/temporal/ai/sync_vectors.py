@@ -15,8 +15,13 @@ from django.conf import settings
 from django.db.models import F, Q
 from openai import APIError as OpenAIAPIError
 
-from ee.hogai.summarizers.chains import abatch_summarize_actions
-from ee.hogai.utils.embeddings import aembed_documents, get_async_cohere_client
+try:
+    from ee.hogai.summarizers.chains import abatch_summarize_actions
+    from ee.hogai.utils.embeddings import aembed_documents, get_async_cohere_client
+except ImportError:
+    abatch_summarize_actions = lambda *args, **kwargs: None
+    aembed_documents = lambda *args, **kwargs: []
+    get_async_cohere_client = lambda: None
 from posthog.models import Action
 from posthog.models.ai.pg_embeddings import INSERT_BULK_PG_EMBEDDINGS_SQL
 from posthog.temporal.common.base import PostHogWorkflow

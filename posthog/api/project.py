@@ -12,7 +12,10 @@ from rest_framework.permissions import IsAuthenticated, BasePermission
 from posthog.api.routing import TeamAndOrgViewSetMixin
 from posthog.api.shared import ProjectBackwardCompatBasicSerializer
 from posthog.api.team import TeamSerializer, validate_team_attrs
-from ee.api.rbac.access_control import AccessControlViewSetMixin
+try:
+    from ee.api.rbac.access_control import AccessControlViewSetMixin
+except ImportError:
+    AccessControlViewSetMixin = object  # fallback base class to avoid crash
 from posthog.auth import PersonalAPIKeyAuthentication
 from posthog.constants import AvailableFeature
 from ..cloud_utils import get_api_host

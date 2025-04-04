@@ -313,10 +313,13 @@ def get_ph_client(*args: Any, **kwargs: Any) -> PostHogClient:
 def send_report_to_billing_service(org_id: str, report: dict[str, Any]) -> None:
     if not settings.EE_AVAILABLE:
         return
-
+try:
     from ee.billing.billing_manager import BillingManager, build_billing_token
     from ee.billing.billing_types import BillingStatus
     from ee.settings import BILLING_SERVICE_URL
+except ImportError:
+    BillingManager = build_billing_token = BillingStatus = BILLING_SERVICE_URL = None
+
 
     try:
         license = get_cached_instance_license()

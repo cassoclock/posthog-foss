@@ -69,7 +69,10 @@ from posthog.queries.base import (
     determine_parsed_date_for_property_matching,
 )
 from posthog.rate_limit import BurstRateThrottle
-from ee.models.rbac.organization_resource_access import OrganizationResourceAccess
+try:
+    from ee.models.rbac.organization_resource_access import OrganizationResourceAccess
+except ImportError:
+    OrganizationResourceAccess = None
 from django.dispatch import receiver
 from posthog.models.signals import model_activity_signal
 
@@ -890,7 +893,12 @@ class FeatureFlagViewSet(
     def local_evaluation(self, request: request.Request, **kwargs):
         # Check if team is quota limited for feature flags
         if settings.DECIDE_FEATURE_FLAG_QUOTA_CHECK:
-            from ee.billing.quota_limiting import QuotaLimitingCaches, QuotaResource, list_limited_team_attributes
+try:
+    from ee.billing.quota_limiting import QuotaLimitingCaches, QuotaResource, list_limited_team_attributes
+except ImportError:
+    QuotaLimitingCaches = None
+    QuotaResource = None
+    list_limited_team_attributes = lambda *args, **kwargs: []
 
             limited_tokens_flags = list_limited_team_attributes(
                 QuotaResource.FEATURE_FLAG_REQUESTS, QuotaLimitingCaches.QUOTA_LIMITER_CACHE_KEY

@@ -1,4 +1,7 @@
-from ee.models.explicit_team_membership import ExplicitTeamMembership
+try:
+    from ee.models.explicit_team_membership import ExplicitTeamMembership
+except ImportError:
+    ExplicitTeamMembership = None
 from posthog.models.organization import OrganizationMembership
 from posthog.models.user import User
 from posthog.test.base import BaseTest

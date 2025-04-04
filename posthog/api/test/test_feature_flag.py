@@ -46,6 +46,11 @@ from posthog.test.base import (
     snapshot_postgres_queries_context,
 )
 from posthog.test.db_context_capturing import capture_db_queries
+try:
+    from ee.billing.quota_limiting import QuotaLimitingCaches, QuotaResource
+except ImportError:
+    QuotaLimitingCaches = None
+    QuotaResource = None
 
 
 class TestFeatureFlag(APIBaseTest, ClickhouseTestMixin):
@@ -3851,9 +3856,10 @@ class TestFeatureFlag(APIBaseTest, ClickhouseTestMixin):
             )
 
     @patch("posthog.api.feature_flag.settings.DECIDE_FEATURE_FLAG_QUOTA_CHECK", True)
-    def test_local_evaluation_quota_limited(self):
-        """Test that local evaluation returns 402 Payment Required when over quota."""
-        from ee.billing.quota_limiting import QuotaLimitingCaches, QuotaResource
+def test_local_evaluation_quota_limited(self):
+    """Test that local evaluation returns 402 Payment Required when over quota."""
+    if not QuotaLimitingCaches or not QuotaResource:
+        self.skipTest("EE quota limiting not available in FOSS.")
 
         # Set up a feature flag
         self.client.post(

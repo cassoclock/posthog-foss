@@ -534,30 +534,27 @@ class Team(UUIDClassicModel):
         return cache.get(cache_key) == "True"
 
     def kick_off_demo_data_generation(self, initiating_user: "User") -> None:
-        from posthog.tasks.demo_create_data import create_data_for_demo_team
+    from posthog.tasks.demo_create_data import create_data_for_demo_team
 
-        cache_key = f"is_generating_demo_data_{self.id}"
-        cache.set(cache_key, "True")  # Create an item in the cache that we can use to see if the demo data is ready
-        create_data_for_demo_team.delay(self.id, initiating_user.id, cache_key)
-
-    def all_users_with_access(self) -> QuerySet["User"]:
-    from posthog.models.organization import OrganizationMembership
-    from posthog.models.user import User
+    cache_key = f"is_generating_demo_data_{self.id}"
+    cache.set(cache_key, "True")  # Create an item in the cache that we can use to see if the demo data is ready
+    create_data_for_demo_team.delay(self.id, initiating_user.id, cache_key)
 
     def all_users_with_access(self) -> QuerySet["User"]:
-    from posthog.models.organization import OrganizationMembership
-    from posthog.models.user import User
+        from posthog.models.organization import OrganizationMembership
+        from posthog.models.user import User
 
-    if not self.access_control or not ExplicitTeamMembership:
-        return User.objects.filter(
-            id__in=OrganizationMembership.objects.filter(
-                organization_id=self.organization_id
-            ).values_list("user_id", flat=True)
-        )
+        if not self.access_control or not ExplicitTeamMembership:
+            return User.objects.filter(
+                id__in=OrganizationMembership.objects.filter(
+                    organization_id=self.organization_id
+                ).values_list("user_id", flat=True)
+            )
 
     user_ids_queryset = (
         OrganizationMembership.objects.filter(
-            organization_id=self.organization_id, level__gte=OrganizationMembership.Level.ADMIN
+            organization_id=self.organization_id,
+            level__gte=OrganizationMembership.Level.ADMIN
         )
         .values_list("user_id", flat=True)
         .union(
@@ -568,6 +565,7 @@ class Team(UUIDClassicModel):
     )
 
     return User.objects.filter(is_active=True, id__in=user_ids_queryset)
+
 
     def __str__(self):
         if self.name:
